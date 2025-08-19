@@ -54,29 +54,41 @@
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Firebase Logout -->
+  <!-- Firebase Auth -->
   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    const auth = getAuth();
+    // ✅ SAME config as index.html
+    const firebaseConfig = {
+      apiKey: "AIzaSyBjSQoODv0AoPsExhsbLrYTyP90LOJX_9Y",
+      authDomain: "my-web4o.firebaseapp.com",
+      projectId: "my-web4o",
+      storageBucket: "my-web4o.firebasestorage.app",
+      messagingSenderId: "226593866449",
+      appId: "1:226593866449:web:425d6df4eef46bbfd9fbf0"
+    };
 
-    // Logout function
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Logout function
     function logout() {
       signOut(auth).then(() => {
+        console.log("User signed out");
         window.location.href = "index.html";
       }).catch((error) => {
         console.error("Logout error:", error);
       });
     }
 
-    // If user is not logged in, redirect back to login
+    // ✅ If user not logged in, kick back to login
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "index.html";
       }
     });
 
-    // expose to button
     window.logout = logout;
   </script>
 </body>
