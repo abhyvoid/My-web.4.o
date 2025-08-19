@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Website</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🌐 Welcome to My Website</h1>
+  
+  <!-- LOGIN BOX -->
+  <div class="login-box" id="login-box">
+    <h3>Login</h3>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- WEBSITE CONTENT -->
+  <div id="content" style="display:none;">
+    <nav>
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('about')">About</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <section id="home" class="page">
+      <h2>🏠 Home</h2>
+      <p>Welcome to my simple multi-page website.</p>
+      <img src="https://picsum.photos/400/200" alt="Random Image">
+    </section>
+
+    <!-- ABOUT PAGE -->
+    <section id="about" class="page" style="display:none;">
+      <h2>ℹ️ About</h2>
+      <p>This website was built for free using HTML, CSS, and JavaScript.</p>
+    </section>
+
+    <!-- CONTACT PAGE -->
+    <section id="contact" class="page" style="display:none;">
+      <h2>📩 Contact</h2>
+      <p>You can contact me at <b>myemail@example.com</b></p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
