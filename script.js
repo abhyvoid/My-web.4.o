@@ -1,7 +1,7 @@
 function login() {
   let u = document.getElementById("username").value;
   let p = document.getElementById("password").value;
-  if(u === "admin" && p === "1234") {
+  if(u === "Aditi" && p === "1614") {
     document.getElementById("login-box").style.display = "none";
     document.getElementById("content").style.display = "block";
     showPage('home');
