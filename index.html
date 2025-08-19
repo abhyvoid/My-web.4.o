@@ -39,6 +39,12 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const signupBtn = document.getElementById("signupBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const message = document.getElementById("message");
+
     signupBtn.addEventListener("click", async () => {
       try {
         await createUserWithEmailAndPassword(auth, email.value, password.value);
@@ -59,18 +65,20 @@
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        window.location.href = "home.html";
+        // Only redirect if we are not already on home page
+        if (window.location.pathname.endsWith("index.html")) {
+          window.location.href = "home.html";
+        }
       }
     });
 
     // 👁 Toggle Password Visibility
     document.getElementById("togglePassword").addEventListener("click", () => {
-      const pwd = document.getElementById("password");
-      if (pwd.type === "password") {
-        pwd.type = "text";
+      if (password.type === "password") {
+        password.type = "text";
         togglePassword.textContent = "🙈";
       } else {
-        pwd.type = "password";
+        password.type = "password";
         togglePassword.textContent = "👁";
       }
     });
