@@ -54,11 +54,30 @@
     <button onclick="logout()">Logout</button>
   </div>
 
-  <script>
+  <!-- Firebase Logout -->
+  <script type="module">
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const auth = getAuth();
+
+    // Logout function
     function logout() {
-      // Clear login (later we can add Firebase signOut here)
-      window.location.href = "index.html";
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      }).catch((error) => {
+        console.error("Logout error:", error);
+      });
     }
+
+    // If user is not logged in, redirect back to login
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+      }
+    });
+
+    // expose to button
+    window.logout = logout;
   </script>
 </body>
 </html>
