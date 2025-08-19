@@ -1,28 +1,79 @@
-body{
-  margin:0;
-  padding:0;
-  min-height:100vh;
-  background: url("aditi.jpg") center/cover no-repeat;
+/* Background full screen */
+body {
+  margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
+  background: url("aditi.jpg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-.login-box { 
-  width: 300px; margin: auto; padding: 20px; 
-  border: 1px solid #ccc; border-radius: 12px; 
-  background: #fff; box-shadow: 0px 4px 10px rgba(0,0,0,0.1); 
-}
-input { 
-  width: 90%; margin: 10px; padding: 8px; 
-  border: 1px solid #bbb; border-radius: 8px; 
-}
-button { 
-  padding: 10px 20px; border: none; border-radius: 8px; 
-  background: #4CAF50; color: white; font-weight: bold; cursor: pointer; 
-}
-button:hover { background: #45a049; }
-img { width: 100%; border-radius: 10px; margin: 15px 0; }
 
-nav { margin: 20px; }
-nav a { margin: 0 15px; text-decoration: none; font-weight: bold; color: #333; }
-nav a:hover { color: #4CAF50; }
+/* Login box */
+.login-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0px 4px 20px rgba(0,0,0,0.5);
+  color: white;
+}
 
-.page { margin-top: 20px; }
+/* Input fields */
+.login-container input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Password box with eye icon */
+.password-box {
+  position: relative;
+  width: 90%;
+  margin: 10px auto;
+}
+
+.password-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.password-box span {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ccc;
+  user-select: none;
+}
+
+/* Buttons */
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #ff9800;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background: #e68900;
+}
+
+/* Message text */
+#message {
+  margin-top: 10px;
+  font-size: 14px;
+}
