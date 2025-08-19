@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -23,21 +23,12 @@
 
   <!-- Firebase Auth -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } 
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBjSQoODv0AoPsExhsbLrYTyP90LOJX_9Y",
-      authDomain: "my-web4o.firebaseapp.com",
-      projectId: "my-web4o",
-      storageBucket: "my-web4o.firebasestorage.app",
-      messagingSenderId: "226593866449",
-      appId: "1:226593866449:web:425d6df4eef46bbfd9fbf0"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    import { auth } from "./firebase.js";
+    import {
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const email = document.getElementById("email");
     const password = document.getElementById("password");
@@ -64,16 +55,14 @@
     });
 
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Only redirect if we are not already on home page
-        if (window.location.pathname.endsWith("index.html")) {
-          window.location.href = "home.html";
-        }
+      if (user && window.location.pathname.endsWith("index.html")) {
+        window.location.href = "home.html";
       }
     });
 
-    // 👁 Toggle Password Visibility
-    document.getElementById("togglePassword").addEventListener("click", () => {
+    // 👁 toggle password visibility
+    const togglePassword = document.getElementById("togglePassword");
+    togglePassword.addEventListener("click", () => {
       if (password.type === "password") {
         password.type = "text";
         togglePassword.textContent = "🙈";
