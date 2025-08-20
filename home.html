@@ -9,56 +9,107 @@
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      text-align: center;
     }
     .container {
-      background: white;
       padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
+      max-width: 900px;
+      margin: auto;
     }
     h1 {
+      text-align: center;
       color: #333;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
-    p {
-      color: #555;
+    .intro {
+      text-align: center;
+      margin-bottom: 30px;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
+    .intro img {
+      width: 200px;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+    .editor {
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      display: none; /* hidden for others */
+    }
+    textarea, input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .logout-btn {
+      display: block;
+      margin: 40px auto 0;
+      padding: 12px 25px;
       border: none;
-      background: #4CAF50;
+      background: #e74c3c;
       color: white;
       font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
     }
-    button:hover {
-      background: #45a049;
+    .logout-btn:hover {
+      background: #c0392b;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h2>🌐 My Web 4.0</h2>
+  </header>
+
   <div class="container">
     <h1>Welcome 🎉</h1>
-    <p>You have successfully logged in!</p>
-    <button onclick="logout()">Logout</button>
+
+    <!-- This is what everyone sees -->
+    <div class="intro">
+      <p id="content">This is your home page text.</p>
+      <img id="image" src="https://via.placeholder.com/200" alt="Example Image">
+    </div>
+
+    <!-- This editor only you can see -->
+    <div class="editor" id="editor">
+      <h3>Edit Content ✍️</h3>
+      <textarea id="textInput" placeholder="Write new text..."></textarea>
+      <input type="text" id="imageInput" placeholder="Paste image URL here">
+      <button onclick="updateContent()">Update</button>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <!-- Firebase Logout -->
+  <!-- Firebase Auth -->
   <script type="module">
     import { auth } from "./firebase.js";
     import { signOut, onAuthStateChanged }
       from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const allowedEmail = "YOUR_EMAIL@gmail.com"; // 🔑 change this to your email
+
+    function updateContent() {
+      document.getElementById("content").innerText =
+        document.getElementById("textInput").value;
+
+      document.getElementById("image").src =
+        document.getElementById("imageInput").value;
+    }
 
     function logout() {
       signOut(auth).then(() => {
@@ -71,10 +122,16 @@
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "index.html";
+      } else {
+        if (user.email === allowedEmail) {
+          // Only you can see editor
+          document.getElementById("editor").style.display = "block";
+        }
       }
     });
 
     window.logout = logout;
+    window.updateContent = updateContent;
   </script>
 </body>
 </html>
