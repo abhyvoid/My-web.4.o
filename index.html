@@ -2,76 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - My Web 4.0</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="login-container">
-    <h2>Welcome Back</h2>
-
-    <input type="email" id="email" placeholder="Enter Email">
-
-    <div class="password-box">
-      <input type="password" id="password" placeholder="Enter Password">
-      <span id="togglePassword">👁</span>
-    </div>
-
-    <button id="signupBtn">Sign Up</button>
-    <button id="loginBtn">Login</button>
-    <p id="message"></p>
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p>Don’t have an account? <button onclick="signup()">Sign Up</button></p>
   </div>
 
-  <!-- Firebase Auth -->
   <script type="module">
     import { auth } from "./firebase.js";
-    import {
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const signupBtn = document.getElementById("signupBtn");
-    const loginBtn = document.getElementById("loginBtn");
-    const message = document.getElementById("message");
-
-    signupBtn.addEventListener("click", async () => {
-  try {
-    await createUserWithEmailAndPassword(auth, email.value, password.value);
-    message.textContent = "✅ Signup successful!";
-    
-    // Redirect straight to home page
-    window.location.href = "home.html";
-  } catch (error) {
-    message.textContent = "❌ " + error.message;
-  }
-});
-
-    loginBtn.addEventListener("click", async () => {
+    // Login
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
       try {
-        await signInWithEmailAndPassword(auth, email.value, password.value);
+        await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "home.html";
-      } catch (error) {
-        message.textContent = "❌ " + error.message;
+      } catch (err) {
+        alert(err.message);
       }
-    });
+    };
 
+    // Signup
+    window.signup = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Account created, now login!");
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+
+    // Redirect if already logged in
     onAuthStateChanged(auth, (user) => {
-      if (user && window.location.pathname.endsWith("index.html")) {
+      if (user) {
         window.location.href = "home.html";
-      }
-    });
-
-    // 👁 toggle password visibility
-    const togglePassword = document.getElementById("togglePassword");
-    togglePassword.addEventListener("click", () => {
-      if (password.type === "password") {
-        password.type = "text";
-        togglePassword.textContent = "🙈";
-      } else {
-        password.type = "password";
-        togglePassword.textContent = "👁";
       }
     });
   </script>
