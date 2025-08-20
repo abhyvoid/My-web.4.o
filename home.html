@@ -6,158 +6,105 @@
   <title>Home - My Web 4.0</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      margin: 0;
-      padding: 0;
-    }
+       body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
 
-    header {
-      background: #4CAF50;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-    }
+header {
+  background: #4CAF50;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: center; /* center title */
+  align-items: center;
+  position: relative;
+}
 
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      position: relative;
-      background: white;
-      color: #333;
-      padding: 5px 10px;
-      border-radius: 20px;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
+header h2 {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* keep title perfectly centered */
+}
 
-    .profile:hover {
-      transform: scale(1.05);
-    }
+header .profile {
+  position: absolute;
+  left: 20px; /* stick profile to left */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: white;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 20px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
 
-    .profile img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+header .profile:hover {
+  transform: scale(1.05);
+}
 
-    .profile span {
-      font-weight: bold;
-      font-size: 14px;
-    }
+header .profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-    .dropdown {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 55px;
-      background: white;
-      color: #333;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-      padding: 10px;
-      min-width: 120px;
-      z-index: 100;
+header .profile span {
+  font-weight: bold;
+  font-size: 14px;
+}
 
-      /* Animation setup */
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: all 0.25s ease;
-    }
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 55px;
+  left: 20px;
+  background: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  padding: 10px;
+  min-width: 120px;
 
-    .dropdown.show {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Animation */
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
+}
 
-    .dropdown button {
-      width: 100%;
-      padding: 8px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      text-align: left;
-    }
+.dropdown.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    .dropdown button:hover {
-      background: #f1f1f1;
-    }
+.dropdown button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: calc(100vh - 70px);
-      text-align: center;
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
-    }
+.dropdown button:hover {
+  background: #f1f1f1;
+}
 
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .intro img {
-      width: 200px;
-      border-radius: 12px;
-      margin-top: 10px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .editor {
-      margin-top: 30px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fff;
-      display: none;
-    }
-
-    textarea, input {
-      width: 100%;
-      margin: 10px 0;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    /* 📱 Responsive for mobile */
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .profile {
-        margin-top: 10px;
-        align-self: flex-end;
-      }
-
-      .container {
-        padding: 20px;
-      }
-
-      .intro img {
-        width: 100%;
-        max-width: 300px;
-      }
-
-      .profile span {
-        display: none; /* hide name on very small screens */
-      }
-    }
+/* 📱 Responsive: hide email text on small screens */
+@media (max-width: 600px) {
+  header .profile span {
+    display: none;
+  }
+} 
   </style>
 </head>
 <body>
