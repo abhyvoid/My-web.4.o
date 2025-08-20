@@ -12,94 +12,129 @@
       margin: 0;
       padding: 0;
     }
+
     header {
-  background: #4CAF50;
-  color: white;
-  padding: 15px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
+      background: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
 
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  position: relative;
-}
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+    }
 
-.profile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid white;
-}
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
 
-.profile span {
-  font-weight: bold;
-}
+    .profile span {
+      font-weight: bold;
+    }
 
-.dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 60px;
-  background: white;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-  padding: 10px;
-  min-width: 120px;
-  z-index: 100;
-}
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background: white;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      padding: 10px;
+      min-width: 120px;
+      z-index: 100;
+    }
 
-.dropdown button {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-}
+    .dropdown button {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+    }
 
-.dropdown button:hover {
-  background: #f1f1f1;
-}
+    .dropdown button:hover {
+      background: #f1f1f1;
+    }
+
+    .container {
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .intro img {
+      width: 200px;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .editor {
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      display: none; /* hidden for others */
+    }
+
+    textarea, input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
   <header>
-  <h2>🌐 My Web 4.0</h2>
-  <div class="profile" onclick="toggleMenu()">
-    <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile">
-    <span id="profileName">User</span>
-    <div class="dropdown" id="dropdownMenu">
-      <button onclick="logout()">Logout</button>
+    <h2>🌐 My Web 4.0</h2>
+    <div class="profile" onclick="toggleMenu()">
+      <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile">
+      <span id="profileName">User</span>
+      <div class="dropdown" id="dropdownMenu">
+        <button onclick="logout()">Logout</button>
+      </div>
     </div>
-  </div>
   </header>
 
   <div class="container">
     <h1>Welcome 🎉</h1>
 
-    <!-- This is what everyone sees -->
+    <!-- Everyone sees this -->
     <div class="intro">
       <p id="content">This is your home page text.</p>
       <img id="image" src="https://via.placeholder.com/200" alt="Example Image">
     </div>
 
-    <!-- This editor only you can see -->
+    <!-- Only you see this editor -->
     <div class="editor" id="editor">
       <h3>Edit Content ✍️</h3>
       <textarea id="textInput" placeholder="Write new text..."></textarea>
       <input type="text" id="imageInput" placeholder="Paste image URL here">
       <button onclick="updateContent()">Update</button>
     </div>
-
-    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <!-- Firebase Auth -->
@@ -108,7 +143,18 @@
     import { signOut, onAuthStateChanged }
       from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    const allowedEmail = "YOUR_EMAIL@gmail.com"; // 🔑 change this to your email
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener("click", function(event) {
+      const profile = document.querySelector(".profile");
+      if (!profile.contains(event.target)) {
+        document.getElementById("dropdownMenu").style.display = "none";
+      }
+    });
 
     function updateContent() {
       document.getElementById("content").innerText =
@@ -130,8 +176,15 @@
       if (!user) {
         window.location.href = "index.html";
       } else {
-        if (user.email === allowedEmail) {
-          // Only you can see editor
+        document.getElementById("profileName").innerText =
+          user.displayName || user.email;
+
+        if (user.photoURL) {
+          document.getElementById("profilePic").src = user.photoURL;
+        }
+
+        // Show editor only for your account (replace with your email)
+        if (user.email === "YOUR_EMAIL@gmail.com") {
           document.getElementById("editor").style.display = "block";
         }
       }
