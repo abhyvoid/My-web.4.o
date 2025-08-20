@@ -37,13 +37,16 @@
     const message = document.getElementById("message");
 
     signupBtn.addEventListener("click", async () => {
-      try {
-        await createUserWithEmailAndPassword(auth, email.value, password.value);
-        message.textContent = "✅ Signup successful!";
-      } catch (error) {
-        message.textContent = "❌ " + error.message;
-      }
-    });
+  try {
+    await createUserWithEmailAndPassword(auth, email.value, password.value);
+    message.textContent = "✅ Signup successful!";
+    
+    // Redirect straight to home page
+    window.location.href = "home.html";
+  } catch (error) {
+    message.textContent = "❌ " + error.message;
+  }
+});
 
     loginBtn.addEventListener("click", async () => {
       try {
