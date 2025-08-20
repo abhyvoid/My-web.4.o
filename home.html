@@ -6,116 +6,114 @@
   <title>Home - My Web 4.0</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff; /* full white background */
+      margin: 0;
+      padding: 0;
     }
-  </stylebody {
-  font-family: Arial, sans-serif;
-  background: #fff; /* full white background */
-  margin: 0;
-  padding: 0;
-}
 
-header {
-  background: #4CAF50;
-  color: white;
-  padding: 15px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
 
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  position: relative;
-  background: none;
-  padding: 0;
-}
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+      background: none;
+      padding: 0;
+    }
 
-.profile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid white;
-  object-fit: cover;
-}
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
 
-.profile span {
-  font-weight: bold;
-}
+    .profile span {
+      font-weight: bold;
+    }
 
-.dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 60px;
-  background: white;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-  padding: 10px;
-  min-width: 120px;
-  z-index: 100;
-}
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 60px;
+      background: white;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      padding: 10px;
+      min-width: 120px;
+      z-index: 100;
+    }
 
-.dropdown button {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-}
+    .dropdown button {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+    }
 
-.dropdown button:hover {
-  background: #f1f1f1;
-}
+    .dropdown button:hover {
+      background: #f1f1f1;
+    }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 70px); /* full height minus header */
-  text-align: center;
-  padding: 40px;
-  max-width: 900px;
-  margin: auto;
-}
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 70px); /* full height minus header */
+      text-align: center;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
 
-h1 {
-  color: #333;
-  margin-bottom: 20px;
-}
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
 
-.intro img {
-  width: 200px;
-  border-radius: 12px;
-  margin-top: 10px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-}
+    .intro img {
+      width: 200px;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
 
-.editor {
-  margin-top: 30px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: #fff;
-  display: none; /* hidden for others */
-}
+    .editor {
+      margin-top: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      display: none; /* hidden for others */
+    }
 
-textarea, input {
-  width: 100%;
-  margin: 10px 0;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-    
+    textarea, input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -138,7 +136,7 @@ textarea, input {
       <img id="image" src="https://via.placeholder.com/200" alt="Example Image">
     </div>
 
-    <!-- Only you see this editor -->
+    <!-- Only Abhay sees this editor -->
     <div class="editor" id="editor">
       <h3>Edit Content ✍️</h3>
       <textarea id="textInput" placeholder="Write new text..."></textarea>
@@ -193,8 +191,8 @@ textarea, input {
           document.getElementById("profilePic").src = user.photoURL;
         }
 
-        // Show editor only for your account (replace with your email)
-        if (user.email === "YOUR_EMAIL@gmail.com") {
+        // Only Abhay can see editor
+        if (user.email === "abhayrangappanvat@gmail.com") {
           document.getElementById("editor").style.display = "block";
         }
       }
