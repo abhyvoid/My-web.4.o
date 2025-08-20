@@ -1,217 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Home - My Web 4.0</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-       body {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  background: #4CAF50;
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: center; /* center title */
-  align-items: center;
-  position: relative;
-}
-
-header h2 {
-  margin: 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%); /* keep title perfectly centered */
-}
-
-header .profile {
-  position: absolute;
-  left: 20px; /* stick profile to left */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  background: white;
-  color: #333;
-  padding: 5px 10px;
-  border-radius: 20px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-header .profile:hover {
-  transform: scale(1.05);
-}
-
-header .profile img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-header .profile span {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.dropdown {
-  display: none;
-  position: absolute;
-  top: 55px;
-  left: 20px;
-  background: white;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-  padding: 10px;
-  min-width: 120px;
-
-  /* Animation */
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.25s ease;
-}
-
-.dropdown.show {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.dropdown button {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-}
-
-.dropdown button:hover {
-  background: #f1f1f1;
-}
-
-/* 📱 Responsive: hide email text on small screens */
-@media (max-width: 600px) {
-  header .profile span {
-    display: none;
-  }
-} 
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Header -->
   <header>
-  <!-- Profile left -->
-  <div class="profile" onclick="toggleMenu()">
-    <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile">
-    <span id="profileName">User</span>
-    <div class="dropdown" id="dropdownMenu">
+    <div class="profile" onclick="toggleDropdown()">
+      <img id="userPic" src="https://i.postimg.cc/Zn358ZjF/Snapchat-620299345.jpg" alt="profile">
+      <span class="site-title">My Web 4.0</span>
+    </div>
+    <div id="dropdown" class="dropdown">
       <button onclick="logout()">Logout</button>
     </div>
-  </div>
-
-  <!-- Title center -->
-  <h2 style="margin: 0 auto; color:white;">🌐 My Web 4.0</h2>
   </header>
 
+  <!-- Main Content -->
   <div class="container">
     <h1>Welcome 🎉</h1>
 
-    <!-- Everyone sees this -->
-    <div class="intro">
-      <p id="content">This is your home page text.</p>
-      <img id="image" src="https://via.placeholder.com/200" alt="Example Image">
-    </div>
+    <!-- Posts -->
+    <div id="posts"></div>
 
-    <!-- Only Abhay sees this editor -->
+    <!-- Editor (only visible for your Gmail) -->
     <div class="editor" id="editor">
-      <h3>Edit Content ✍️</h3>
+      <h3>Add New Post ✍️</h3>
+      <input type="text" id="titleInput" placeholder="Post title..." />
       <textarea id="textInput" placeholder="Write new text..."></textarea>
-      <input type="text" id="imageInput" placeholder="Paste image URL here">
-      <button onclick="updateContent()">Update</button>
+      <input type="text" id="imageInput" placeholder="Paste image URL here" />
+      <button onclick="addPost()">Add Post</button>
     </div>
   </div>
 
-  <!-- Firebase Auth -->
   <script type="module">
-    import { auth } from "./firebase.js";
-    import { signOut, onAuthStateChanged }
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { auth, db } from "./firebase.js";
+    import { signOut, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { collection, addDoc, getDocs, serverTimestamp, query, orderBy } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    function toggleMenu() {
-      const menu = document.getElementById("dropdownMenu");
+    const editor = document.getElementById("editor");
+    const postsDiv = document.getElementById("posts");
+    const allowedEmail = "abhayrangappanvat@gmail.com"; // only you can add posts
 
-      if (menu.classList.contains("show")) {
-        // closing
-        menu.classList.remove("show");
-        setTimeout(() => {
-          menu.style.display = "none";
-        }, 250);
-      } else {
-        // opening
-        menu.style.display = "block";
-        setTimeout(() => menu.classList.add("show"), 10);
+    // Logout
+    window.logout = async function () {
+      await signOut(auth);
+      window.location.href = "index.html";
+    };
+
+    // Toggle dropdown
+    window.toggleDropdown = function () {
+      document.getElementById("dropdown").classList.toggle("show");
+    };
+
+    // Add post
+    window.addPost = async function () {
+      const title = document.getElementById("titleInput").value;
+      const text = document.getElementById("textInput").value;
+      const imageUrl = document.getElementById("imageInput").value;
+
+      if (!title || !text) {
+        alert("Please fill title and text!");
+        return;
       }
-    }
 
-    // Close dropdown if clicked outside
-    window.addEventListener("click", function(event) {
-      const profile = document.querySelector(".profile");
-      if (!profile.contains(event.target)) {
-        const menu = document.getElementById("dropdownMenu");
-        if (menu.classList.contains("show")) {
-          menu.classList.remove("show");
-          setTimeout(() => {
-            menu.style.display = "none";
-          }, 250);
-        }
-      }
-    });
+      await addDoc(collection(db, "posts"), {
+        title,
+        text,
+        imageUrl,
+        createdAt: serverTimestamp()
+      });
 
-    function updateContent() {
-      document.getElementById("content").innerText =
-        document.getElementById("textInput").value;
+      document.getElementById("titleInput").value = "";
+      document.getElementById("textInput").value = "";
+      document.getElementById("imageInput").value = "";
 
-      document.getElementById("image").src =
-        document.getElementById("imageInput").value;
-    }
+      loadPosts();
+    };
 
-    function logout() {
-      signOut(auth).then(() => {
-        window.location.href = "index.html";
-      }).catch((error) => {
-        console.error("Logout error:", error);
+    // Load posts
+    async function loadPosts() {
+      postsDiv.innerHTML = "";
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+
+      snapshot.forEach((doc) => {
+        const post = doc.data();
+        const div = document.createElement("div");
+        div.className = "post";
+        div.innerHTML = `
+          <h2>${post.title}</h2>
+          <p>${post.text}</p>
+          ${post.imageUrl ? `<img src="${post.imageUrl}" alt="post image">` : ""}
+          <small>${post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString() : ""}</small>
+        `;
+        postsDiv.appendChild(div);
       });
     }
 
+    // Auth check
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "index.html";
       } else {
-        document.getElementById("profileName").innerText =
-          user.displayName || user.email;
-
-        if (user.photoURL) {
-          document.getElementById("profilePic").src = user.photoURL;
+        if (user.email === allowedEmail) {
+          editor.style.display = "block";
+        } else {
+          editor.style.display = "none";
         }
-
-        // Only Abhay can see editor
-        if (user.email === "abhayrangappanvat@gmail.com") {
-          document.getElementById("editor").style.display = "block";
-        }
+        loadPosts();
       }
     });
-
-    window.logout = logout;
-    window.updateContent = updateContent;
   </script>
 </body>
 </html>
