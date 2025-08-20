@@ -72,7 +72,14 @@
 </head>
 <body>
   <header>
-    <h2>🌐 My Web 4.0</h2>
+  <h2>🌐 My Web 4.0</h2>
+  <div class="profile" onclick="toggleMenu()">
+    <img id="profilePic" src="https://via.placeholder.com/40" alt="Profile">
+    <span id="profileName">User</span>
+    <div class="dropdown" id="dropdownMenu">
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
   </header>
 
   <div class="container">
