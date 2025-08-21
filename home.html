@@ -1,163 +1,190 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - My Web 4.0</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Web 4.0</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fff;
       margin: 0;
       padding: 0;
+      background: #fafafa;
     }
-
     header {
-      background: #fff;
-      color: #333;
-      padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 10px 20px;
+      background: #fff;
       border-bottom: 1px solid #ddd;
     }
-
-    .profile {
+    header .profile {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: #fff;
-      color: #333;
-      padding: 5px 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      border: 1px solid #ccc;
+      gap: 10px;
     }
-
-    .profile img {
-      width: 32px;
-      height: 32px;
+    header img {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
     }
-
+    header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
     main {
-      padding: 20px;
-      text-align: center;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
     }
-
-    #pageImage {
-      max-width: 250px;
-      display: block;
-      margin: 10px auto;
-    }
-
-    .editor {
-      margin-top: 20px;
-      padding: 15px;
+    .post-box {
+      background: #fff;
       border: 1px solid #ddd;
-      border-radius: 10px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
     }
-
-    input, textarea {
+    .post-box img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .new-post {
+      margin-bottom: 30px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    textarea, input {
       width: 100%;
       padding: 8px;
-      margin: 8px 0;
-    }
-
-    button {
-      padding: 8px 16px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
   <header>
     <div class="profile">
-      <img src="https://i.postimg.cc/Zn358ZjF/Snapchat-620299345.jpg" alt="Profile">
-      <span>My Web 4.0</span>
+      <img src="https://i.postimg.cc/Zn358ZjF/Snapchat-620299345.jpg" alt="Profile" />
+      <h2>My Web 4.0</h2>
     </div>
     <button id="logoutBtn">Logout</button>
   </header>
 
   <main>
     <h1>Welcome 🎉</h1>
-    <p id="pageText">Loading...</p>
-    <img id="pageImage" src="" alt="Sample Image">
 
-    <div class="editor" id="editor" style="display:none;">
-      <h3>Edit Content ✍️</h3>
-      <textarea id="newText" placeholder="Write new text..."></textarea>
-      <input type="text" id="newImage" placeholder="Paste image URL here">
-      <button id="updateBtn">Update</button>
+    <!-- New Post Section -->
+    <div class="new-post">
+      <h3>Create a new post ✍️</h3>
+      <textarea id="newText" placeholder="Write something..."></textarea>
+      <input id="newImage" placeholder="Paste image URL (optional)" />
+      <button id="postBtn">Post</button>
+    </div>
+
+    <!-- Posts will load here -->
+    <div id="postsContainer">
+      <p>Loading posts...</p>
     </div>
   </main>
 
+  <!-- Firebase -->
   <script type="module">
-    import { auth, signOut, db, doc, setDoc, onSnapshot } from "./firebase.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { 
+      getAuth, onAuthStateChanged, signOut 
+    } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, query, orderBy, onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    // 🔑 Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBjSQoODv0AoPsExhsbLrYTyP90LOJX_9Y",
+      authDomain: "my-web4o.firebaseapp.com",
+      projectId: "my-web4o",
+      storageBucket: "my-web4o.appspot.com",
+      messagingSenderId: "226593866449",
+      appId: "1:226593866449:web:adbdf758ed4810d8d9fbf0"
+    };
+
+    // 🔥 Init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     const logoutBtn = document.getElementById("logoutBtn");
-    const updateBtn = document.getElementById("updateBtn");
-    const editor = document.getElementById("editor");
+    const postBtn = document.getElementById("postBtn");
+    const postsContainer = document.getElementById("postsContainer");
 
-    // ✅ Show live Firestore content
-    onSnapshot(doc(db, "homepage", "content"), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("pageText").innerText = data.text || "No text yet";
-        document.getElementById("pageImage").src = data.image || "";
-      } else {
-        console.log("No content found!");
+    // ✅ Protect page: only logged in users
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "index.html"; // back to login
       }
     });
 
-    // ✅ Only admin sees editor
-    auth.onAuthStateChanged((user) => {
-      if (user && user.email === "abhayrangappanvat@gmail.com") {
-        editor.style.display = "block";
-      } else {
-        editor.style.display = "none";
-      }
+    // ✅ Logout
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
     });
 
-    // ✅ Update button handler
-    updateBtn.addEventListener("click", async () => {
-      const newText = document.getElementById("newText").value;
-      const newImage = document.getElementById("newImage").value;
-
-      if (!auth.currentUser) {
-        alert("You must be logged in to update!");
+    // ✅ Add new post
+    postBtn.addEventListener("click", async () => {
+      const text = document.getElementById("newText").value.trim();
+      const image = document.getElementById("newImage").value.trim();
+      if (!text) {
+        alert("Write something first!");
         return;
       }
-
-      if (auth.currentUser.email !== "abhayrangappanvat@gmail.com") {
-        alert("Only admin can update!");
-        return;
-      }
-
       try {
-        await setDoc(doc(db, "homepage", "content"), {
-          text: newText,
-          image: newImage
+        await addDoc(collection(db, "posts"), {
+          text,
+          image,
+          createdAt: new Date()
         });
-        alert("Updated successfully!");
-      } catch (error) {
-        console.error("Error updating document: ", error);
-        alert("Failed to update: " + error.message);
+        document.getElementById("newText").value = "";
+        document.getElementById("newImage").value = "";
+      } catch (e) {
+        alert("Error adding post: " + e.message);
       }
     });
 
-    // ✅ Logout button
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "index.html";
+    // ✅ Load posts live
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      postsContainer.innerHTML = "";
+      if (snapshot.empty) {
+        postsContainer.innerHTML = "<p>No posts yet.</p>";
+        return;
+      }
+      snapshot.forEach(doc => {
+        const post = doc.data();
+        const div = document.createElement("div");
+        div.classList.add("post-box");
+        div.innerHTML = `
+          <p>${post.text}</p>
+          ${post.image ? `<img src="${post.image}" />` : ""}
+        `;
+        postsContainer.appendChild(div);
+      });
     });
   </script>
 </body>
