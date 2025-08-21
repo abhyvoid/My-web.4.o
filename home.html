@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - My Web 4.0</title>
   <style>
     body {
@@ -10,61 +10,66 @@
       background: #fff;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
 
-    /* Header with profile top-left */
     header {
-      background: #4CAF50;
-      color: white;
+      background: #fff;
+      color: #333;
+      padding: 15px 20px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 10px 20px;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
     }
 
-    .left-section {
+    .profile {
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .profile-pic {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px solid white;
-      object-fit: cover;
-    }
-
-    .logout-btn {
-      background: white;
-      color: #4CAF50;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
+      gap: 8px;
+      background: #fff;
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 20px;
       cursor: pointer;
-      font-weight: bold;
+      border: 1px solid #ccc;
+    }
+
+    .profile img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
     }
 
     main {
-      margin-top: 40px;
+      padding: 20px;
+      text-align: center;
     }
 
-    #editor {
+    #pageImage {
+      max-width: 250px;
+      display: block;
+      margin: 10px auto;
+    }
+
+    .editor {
       margin-top: 20px;
-      display: none;
-    }
-
-    #editor textarea, #editor input {
-      width: 80%;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
       max-width: 400px;
-      margin: 5px 0;
-      padding: 8px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #f9f9f9;
     }
 
-    #editor button {
-      padding: 8px 15px;
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+    }
+
+    button {
+      padding: 8px 16px;
       background: #4CAF50;
       color: white;
       border: none;
@@ -75,80 +80,81 @@
 </head>
 <body>
   <header>
-    <div class="left-section">
-      <img src="https://i.postimg.cc/Zn358ZjF/Snapchat-620299345.jpg" alt="Profile" class="profile-pic">
-      <h2>My Web 4.0</h2>
+    <div class="profile">
+      <img src="https://i.postimg.cc/Zn358ZjF/Snapchat-620299345.jpg" alt="Profile">
+      <span>My Web 4.0</span>
     </div>
-    <button id="logoutBtn" class="logout-btn">Logout</button>
+    <button id="logoutBtn">Logout</button>
   </header>
 
   <main>
     <h1>Welcome 🎉</h1>
     <p id="pageText">Loading...</p>
-    <img id="pageImage" src="" alt="Page Image" style="max-width:200px; margin-top:10px; display:none;" />
+    <img id="pageImage" src="" alt="Sample Image">
 
-    <!-- Only you can see this editor -->
-    <div id="editor">
+    <div class="editor" id="editor" style="display:none;">
       <h3>Edit Content ✍️</h3>
-      <textarea id="newText" placeholder="Write new text..."></textarea><br>
-      <input id="newImage" type="text" placeholder="Paste image URL here" /><br>
+      <textarea id="newText" placeholder="Write new text..."></textarea>
+      <input type="text" id="newImage" placeholder="Paste image URL here">
       <button id="updateBtn">Update</button>
     </div>
   </main>
 
-  <!-- Firebase SDKs -->
   <script type="module">
-    import { auth, db, onAuthStateChanged, signOut, doc, setDoc, onSnapshot } from "./firebase.js";
+    import { auth, signOut, db, doc, setDoc, onSnapshot } from "./firebase.js";
 
-    const pageText = document.getElementById("pageText");
-    const pageImage = document.getElementById("pageImage");
-    const editor = document.getElementById("editor");
-    const newText = document.getElementById("newText");
-    const newImage = document.getElementById("newImage");
-    const updateBtn = document.getElementById("updateBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const updateBtn = document.getElementById("updateBtn");
+    const editor = document.getElementById("editor");
 
-    const docRef = doc(db, "pages", "homepage");
-    const allowedEmail = "abhayrangappanvat@gmail.com";
-
-    // 🔹 Auth check (redirect if not logged in)
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "index.html";
+    // ✅ Show live Firestore content
+    onSnapshot(doc(db, "homepage", "content"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("pageText").innerText = data.text || "No text yet";
+        document.getElementById("pageImage").src = data.image || "";
       } else {
-        if (user.email === allowedEmail) {
-          editor.style.display = "block";
-        }
-
-        // Load content live from Firestore
-        onSnapshot(docRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            pageText.textContent = data.text || "No text yet.";
-            if (data.image) {
-              pageImage.src = data.image;
-              pageImage.style.display = "block";
-            } else {
-              pageImage.style.display = "none";
-            }
-          } else {
-            pageText.textContent = "No content yet.";
-          }
-        });
+        console.log("No content found!");
       }
     });
 
-    // 🔹 Update Firestore content
-    updateBtn.addEventListener("click", async () => {
-      await setDoc(docRef, {
-        text: newText.value,
-        image: newImage.value
-      });
-      newText.value = "";
-      newImage.value = "";
+    // ✅ Only admin sees editor
+    auth.onAuthStateChanged((user) => {
+      if (user && user.email === "abhayrangappanvat@gmail.com") {
+        editor.style.display = "block";
+      } else {
+        editor.style.display = "none";
+      }
     });
 
-    // 🔹 Logout
+    // ✅ Update button handler
+    updateBtn.addEventListener("click", async () => {
+      const newText = document.getElementById("newText").value;
+      const newImage = document.getElementById("newImage").value;
+
+      if (!auth.currentUser) {
+        alert("You must be logged in to update!");
+        return;
+      }
+
+      if (auth.currentUser.email !== "abhayrangappanvat@gmail.com") {
+        alert("Only admin can update!");
+        return;
+      }
+
+      try {
+        await setDoc(doc(db, "homepage", "content"), {
+          text: newText,
+          image: newImage
+        });
+        alert("Updated successfully!");
+      } catch (error) {
+        console.error("Error updating document: ", error);
+        alert("Failed to update: " + error.message);
+      }
+    });
+
+    // ✅ Logout button
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "index.html";
